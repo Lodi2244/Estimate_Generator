@@ -7,26 +7,30 @@ import "shards-ui/dist/css/shards.min.css";
 import { Card } from "shards-react";
 
 export default class Form extends React.Component {
+
   state = {
     pricePerWord: "",
     Source: "",
-  }
+  };
 
-  change = e => {
+  onChange = e => {
     this.setState({
       [e.target.name]: e.target.value
     })
-  }
+  };
 
   onSubmit = e => {
     e.preventDefault();
-    this.props.onSubmit(this.state);
-    console.log(this.state);
-    this.setState({
-      pricePerWord: "",
-      Source: "",
-    });
-  }
+    axios.post('http://localhost:9292/countwords', this.state)
+    .then(resp => {
+    console.log(resp.data);
+});
+      this.setState({
+        pricePerWord: "",
+        Source: "",
+      });
+    };
+
 
   render(){
     return(
@@ -35,7 +39,7 @@ export default class Form extends React.Component {
       style={{ maxWidth: "1000px", minHeight: "500px" }}
       >
       <h4 className="jumbotron mb-0 text-center">Translation Estimate</h4>
-    <form id="estimate">
+    <form id="estimate" onSubmit={this.onSubmit}>
       <br/>
       <br/>
       <div className="form-group row">
@@ -45,7 +49,7 @@ export default class Form extends React.Component {
           name="pricePerWord"
           placeholder="$2/word"
           value={this.state.pricePerWord}
-          onChange={e => this.change(e)}
+          onChange={e => this.onChange(e)}
           />
         </div>
       </div>
@@ -57,11 +61,10 @@ export default class Form extends React.Component {
       <textarea
         rows="4"
         cols="50"
-        form="estimate"
-        name="textToTranslate"
+        name="Source"
         placeholder="Lorem Ipsum..."
         value={this.state.Source}
-        onChange={e => this.change(e)}
+        onChange={e => this.onChange(e)}
         ></textarea>
         </div>
         </div>
@@ -69,7 +72,7 @@ export default class Form extends React.Component {
         <br/>
         <div className="form-group row">
         <div className="col-sm-12">
-        <button type="submit" className="btn btn-primary" form="estimate" onClick={ e => this.onSubmit(e)}>Submit</button>
+        <button type="submit" className="btn btn-primary">Submit</button>
         </div>
         </div>
 
@@ -79,5 +82,4 @@ export default class Form extends React.Component {
 </div>
   )
   }
-
 }
