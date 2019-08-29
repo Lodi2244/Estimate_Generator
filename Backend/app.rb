@@ -15,13 +15,13 @@ class MyApp < Sinatra::Base
     hash = JSON.parse(request.body.read)
     text = hash["Source"]
     word_count = Hash.new 0
-    text.split(/\W+/).each do |word|
+    text.split(/[\w\u00C0-\u017F'-]+/).each do |word|
       word_count[word.downcase] += 1
     end
     total_price = word_count.length * hash["pricePerWord"].to_f
     { "totalPrice" => total_price, "words" => word_count }.to_json
   end
-  
+
 
 
   options "*" do
