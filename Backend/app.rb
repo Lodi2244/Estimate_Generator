@@ -1,6 +1,6 @@
 require 'sinatra'
 require 'sinatra/cross_origin'
-
+require 'pry'
 
 class MyApp < Sinatra::Base
   set :bind, '0.0.0.0'
@@ -15,7 +15,8 @@ class MyApp < Sinatra::Base
     hash = JSON.parse(request.body.read)
     text = hash["Source"]
     word_count = Hash.new 0
-    text.split(/[\w\u00C0-\u017F'-]+/).each do |word|
+    words = text.scan(/[\w\u00C0-\u017F'-]+/)
+    words.each do |word|
       word_count[word.downcase] += 1
     end
     total_price = word_count.length * hash["pricePerWord"].to_f

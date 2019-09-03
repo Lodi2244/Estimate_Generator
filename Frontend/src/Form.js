@@ -18,8 +18,7 @@ export default class Form extends React.Component {
     this.state = {
       pricePerWord: "",
       Source: "",
-      wordsData: {"words": {}},
-      totalData: {"totalPrice": ""}
+      dataResp: {"totalPrice": "", "words": {} },
     };
   }
 
@@ -31,33 +30,28 @@ export default class Form extends React.Component {
 
   onSubmit = e => {
     e.preventDefault();
-    axios.post('http://localhost:9292/countwords', this.state)
+    axios.post('http://localhost:9292/countwords', {pricePerWord: this.state.pricePerWord, Source: this.state.Source})
     .then(resp => {
-      this.setState({wordsData: resp.data, totalData: resp.data});
+      this.setState({dataResp: resp.data});
     })
+  };
 
-      this.setState({
-        pricePerWord: "",
-        Source: "",
-      })
-    };
+  renderWords() {
+    return Object.entries(this.state.dataResp.words).map( word => {
+      return (
+        <tr key={word[0]}>
+            <td>{word[0]}</td>
+            <td>{word[1]}</td>
+          </tr>
+      )
+    })
+  }
 
-renderWords() {
-  return Object.entries(this.state.wordsData.words).map( word => {
-    return (
-      <tr key={word[0]}>
-          <td>{word[0]}</td>
-          <td>{word[1]}</td>
-        </tr>
-    )
-  })
-}
-
-renderTotal() {
-    return (
-          <i>{this.state.totalData.totalPrice}</i>
-    )
-}
+  renderTotal() {
+      return (
+            <i>{this.state.dataResp.totalPrice}</i>
+      )
+  }
 
 
   render(){
@@ -121,10 +115,10 @@ renderTotal() {
 <thead className="thead-light">
 <tr>
 <th scope="col">Total</th>
-<th scope="col">{this.renderTotal()} $</th>
 </tr>
 </thead>
 <tbody>
+<th scope="col">{this.renderTotal()} $</th>
 </tbody>
 </table>
 </div>
